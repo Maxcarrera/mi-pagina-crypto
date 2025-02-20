@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div id="particles-js"></div>
     <div class="menu-container">
         <button class="menu-btn" onclick="toggleMenu()">☰</button>
         <div class="menu-dropdown" id="menu">
@@ -25,5 +26,18 @@
             menu.classList.toggle("show");
         }
     </script>
+    <!-- Particles.js Script -->
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script>
+    particlesJS("particles-js", {
+        particles: {
+            number: { value: 100 },
+            size: { value: 3 },
+            move: { speed: 2 },
+            line_linked: { enable: true, distance: 150 }
+        }
+    });
+</script>
+
 </body>
 </html>
