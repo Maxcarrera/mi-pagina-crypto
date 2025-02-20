@@ -53,9 +53,11 @@ body {
 /* Fondo animado con partículas */
 #particles-js {
     position: fixed;
-    width: 100%;
-    height: 100%;
-    background: #000; /* Puedes cambiar el color si quieres */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000; /* Asegurar que el fondo es negro */
     z-index: -1; /* Hace que esté detrás del contenido */
 }
 h1, h2, h3, p, a {
