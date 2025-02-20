@@ -52,3 +52,11 @@ body {
 .content {
     margin-top: 20%;
 }
+/* Fondo animado con partículas */
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #000; /* Puedes cambiar el color si quieres */
+    z-index: -1; /* Hace que esté detrás del contenido */
+}
