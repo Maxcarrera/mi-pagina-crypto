@@ -58,3 +58,6 @@ body {
     background: #000; /* Puedes cambiar el color si quieres */
     z-index: -1; /* Hace que esté detrás del contenido */
 }
+h1, h2, h3, p, a {
+    color: white; /* Asegurar que todo el texto sea visible */
+}
