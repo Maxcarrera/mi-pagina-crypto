@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propuestas de Gobernanza</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="menu-container">
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+        <div class="menu-dropdown" id="menu">
+            <a href="index.html">Inicio</a>
+            <a href="whitepaper.pdf" target="_blank">Whitepaper</a>
+            <a href="propuestas.html">Propuestas de Gobernanza</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <h1>Propuestas de Gobernanza</h1>
+        <p>Aquí aparecerán todas las propuestas de gobernanza.</p>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("menu");
+            menu.classList.toggle("show");
+        }
+    </script>
+</body>
+</html>
