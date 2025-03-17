@@ -8,6 +8,7 @@
 </head>
 <body>
     <div id="particles-js"></div>
+    
     <div class="menu-container">
         <button class="menu-btn" onclick="toggleMenu()">☰</button>
         <div class="menu-dropdown" id="menu">
@@ -21,24 +22,33 @@
         <p>Governance made simple</p>
     </div>
 
+    <!-- Nueva Sección de Propuestas de Gobernanza -->
+    <div id="governance-proposals">
+        <h2>Últimas Propuestas de Gobernanza</h2>
+        <ul id="proposals-list"></ul>
+    </div>
+
     <script>
         function toggleMenu() {
             var menu = document.getElementById("menu");
             menu.classList.toggle("show");
         }
     </script>
-    <!-- Particles.js Script -->
-<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-<script>
-    particlesJS("particles-js", {
-        particles: {
-            number: { value: 100 },
-            size: { value: 3 },
-            move: { speed: 2 },
-            line_linked: { enable: true, distance: 150 }
-        }
-    });
-</script>
 
+    <!-- Particles.js Script -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 100 },
+                size: { value: 3 },
+                move: { speed: 2 },
+                line_linked: { enable: true, distance: 150 }
+            }
+        });
+    </script>
+
+    <!-- Enlace a JavaScript para cargar las propuestas -->
+    <script src="scripts.js"></script>
 </body>
 </html>
