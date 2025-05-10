@@ -63,3 +63,34 @@ body {
 h1, h2, h3, p, a {
     color: white; /* Asegurar que todo el texto sea visible */
 }
+.hero {
+    margin-top: 25vh;
+    padding: 20px;
+}
+.scroll-btn {
+    display: inline-block;
+    margin-top: 20px;
+    background: #444;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+}
+.scroll-btn:hover {
+    background: #666;
+}
+.section {
+    padding: 80px 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    margin: 30px auto;
+    max-width: 800px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+.section img.diagram {
+    max-width: 100%;
+    margin-top: 20px;
+    border: 2px solid white;
+    border-radius: 10px;
+}
