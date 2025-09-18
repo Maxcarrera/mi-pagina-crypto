@@ -140,4 +140,16 @@ h1, h2, h3, p, a {
   margin-top: 15px;
   font-weight: bold;
 }
+#govProposals ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#govProposals li {
+  padding: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  text-align: left;
+}
+
 
