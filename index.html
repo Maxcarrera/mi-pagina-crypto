@@ -1,83 +1,84 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Proyecto Crypto</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>simplifAI governance</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Sección Checador de Wallet -->
-<section id="checador" class="section">
-  <div class="container">
-    <h2>Checador de Wallet</h2>
-    <p>Ingresa tu wallet para verificar si ya tienes tokens de simplifAI Governance.</p>
-    
-    <div class="wallet-checker">
-      <input type="text" id="walletInput" placeholder="Ingresa tu dirección (0x...)" />
-      <button id="checkWalletBtn">Consultar</button>
+  <!-- Menú de navegación -->
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#whitepaper">Whitepaper</a></li>
+        <li><a href="#propuestas">Propuestas</a></li>
+        <li><a href="#checador">Checador</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Sección Inicio -->
+  <section id="inicio" class="section">
+    <div class="container">
+      <h1>simplifAI governance</h1>
+      <p>Una nueva forma de simplificar la gobernanza cripto.</p>
     </div>
+  </section>
 
-    <div id="walletResult"></div>
-  </div>
-</section>
-
-<!-- Script para checar -->
-<script>
-  document.getElementById("checkWalletBtn").addEventListener("click", function() {
-    const wallet = document.getElementById("walletInput").value.trim();
-    const resultDiv = document.getElementById("walletResult");
-
-    if (wallet === "") {
-      resultDiv.innerHTML = "<p style='color:red;'>Por favor ingresa una dirección.</p>";
-      return;
-    }
-
-    // Validación básica de formato
-    if (/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
-      resultDiv.innerHTML = "<p style='color:green;'>✅ Dirección válida. (Aquí luego conectaremos la blockchain)</p>";
-    } else {
-      resultDiv.innerHTML = "<p style='color:red;'>❌ Dirección inválida.</p>";
-    }
-  });
-</script>
-
-    <div id="particles-js"></div>
-
-    <div class="menu-container">
-        <button class="menu-btn" onclick="toggleMenu()">☰</button>
-        <div class="menu-dropdown" id="menu">
-           <a href="whitepaper.pdf" target="_blank">Whitepaper</a>
-           <a href="propuestas.html">Propuestas de Gobernanza</a>  <!-- Este enlace lleva a la nueva página -->
-        </div>
+  <!-- Sección Whitepaper -->
+  <section id="whitepaper" class="section">
+    <div class="container">
+      <h2>Whitepaper</h2>
+      <p>Puedes leer nuestro whitepaper completo aquí:</p>
+      <a href="whitepaper.pdf" target="_blank" class="btn">Ver Whitepaper</a>
     </div>
+  </section>
 
-    <div class="content">
-        <h1>SimplifAI GOVERNANCE</h1>
-        <p>Governance made simple</p>
-        <img src="diagrama.png" alt="Diagrama del Proyecto" style="max-width:90%; margin-top: 50px; border-radius: 10px;">
-
+  <!-- Sección Propuestas -->
+  <section id="propuestas" class="section">
+    <div class="container">
+      <h2>Propuestas</h2>
+      <p>Aquí podrás consultar y participar en las propuestas de gobernanza.</p>
+      <!-- Aquí luego puedes conectar con API/Tally -->
     </div>
+  </section>
 
-    <script>
-        function toggleMenu() {
-            var menu = document.getElementById("menu");
-            menu.classList.toggle("show");
-        }
-    </script>
+  <!-- Sección Checador -->
+  <section id="checador" class="section">
+    <div class="container">
+      <h2>Checador de Wallet</h2>
+      <p>Ingresa tu wallet para verificar si ya tienes tokens de simplifAI Governance.</p>
+      
+      <div class="wallet-checker">
+        <input type="text" id="walletInput" placeholder="Ingresa tu dirección (0x...)" />
+        <button id="checkWalletBtn">Consultar</button>
+      </div>
 
-    <!-- Particles.js Script -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script>
-        particlesJS("particles-js", {
-            particles: {
-                number: { value: 100 },
-                size: { value: 3 },
-                move: { speed: 2 },
-                line_linked: { enable: true, distance: 150 }
-            }
-        });
-    </script>
+      <div id="walletResult"></div>
+    </div>
+  </section>
+
+  <!-- Script para checar -->
+  <script>
+    document.getElementById("checkWalletBtn").addEventListener("click", function() {
+      const wallet = document.getElementById("walletInput").value.trim();
+      const resultDiv = document.getElementById("walletResult");
+
+      if (wallet === "") {
+        resultDiv.innerHTML = "<p style='color:red;'>⚠️ Por favor ingresa una dirección.</p>";
+        return;
+      }
+
+      // Validación básica de formato Ethereum
+      if (/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
+        resultDiv.innerHTML = "<p style='color:green;'>✅ Dirección válida. (Aquí luego conectaremos la blockchain)</p>";
+      } else {
+        resultDiv.innerHTML = "<p style='color:red;'>❌ Dirección inválida.</p>";
+      }
+    });
+  </script>
 </body>
 </html>
 
