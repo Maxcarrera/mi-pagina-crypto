@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checador - SimplifAI Governance</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="menu-container">
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <div class="menu-dropdown" id="menu">
+      <a href="index.html">Inicio</a>
+      <a href="whitepaper.pdf" target="_blank">Whitepaper</a>
+      <a href="propuestas.html">Propuestas</a>
+      <a href="checador.html">Checador</a>
+    </div>
+  </div>
+
+  <section class="section">
+    <h2>Checador de Wallets (Osmosis)</h2>
+    <p>Ingresa aquí una dirección de Osmosis (ej. osmo1...)</p>
+
+    <input id="osmosis-address" placeholder="osmo1..." style="width:80%;padding:10px;border-radius:10px;margin-top:10px;">
+    <button id="btnCheckOsmosis" style="padding:10px 18px;border-radius:10px;margin-left:8px;">Consultar</button>
+
+    <div id="osmosis-result" style="margin-top:20px;"></div>
+  </section>
+
+  <script>
+    function toggleMenu() {
+      var menu = document.getElementById("menu");
+      menu.classList.toggle("show");
+    }
+  </script>
+
+  <!-- Partículas -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 100 },
+        size: { value: 3 },
+        move: { speed: 2 },
+        line_linked: { enable: true, distance: 150 }
+      }
+    });
+  </script>
+
+  <!-- Reutiliza scripts.js (contiene la función checkOsmosis) -->
+  <script src="scripts.js"></script>
+  <script>
+    // Conectar botón al chequeo
+    document.getElementById('btnCheckOsmosis').addEventListener('click', async () => {
+      const addr = document.getElementById('osmosis-address').value.trim();
+      await checkOsmosis(addr); // función definida en scripts.js
+    });
+  </script>
+</body>
+</html>
