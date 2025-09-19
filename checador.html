@@ -1,100 +1,82 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Checador Osmosis</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div id="particles-js"></div>
+<!-- 🔹 SECCIÓN CHECADOR -->
+<section id="checardor-section" style="display:none;">
+  <h2>Checador de Wallet</h2>
+  <input type="text" id="walletAddress" placeholder="Ingresa tu dirección de Osmosis">
+  <button onclick="consultarWallet()">Consultar</button>
 
-  <div class="menu-container">
-    <button class="menu-btn" onclick="toggleMenu()">☰</button>
-    <div class="menu-dropdown" id="menu">
-      <a href="whitepaper.pdf" target="_blank">Whitepaper</a>
-      <a href="propuestas.html">Propuestas</a>
-      <a href="checador.html">Checador Osmosis</a>
-    </div>
-  </div>
+  <div id="walletInfo" style="margin-top:20px;"></div>
 
-  <!-- Checador -->
-  <section class="section">
-    <h2>Checador de Wallet Osmosis</h2>
-    <p>Ingresa tu dirección para ver balance, staking y propuestas:</p>
-    <input type="text" id="walletInput" placeholder="osmo1..." style="width:80%;padding:10px;border-radius:10px;">
-    <button onclick="consultarWallet()" style="padding:10px 20px;border-radius:10px;margin-top:10px;">Consultar</button>
+  <h3>Últimas propuestas de gobernanza</h3>
+  <div id="proposalsList"></div>
+</section>
 
-    <div id="walletResult" style="margin-top:20px;"></div>
-    <div id="stakingResult" style="margin-top:20px;"></div>
-    <div id="govProposals" style="margin-top:20px;"></div>
-  </section>
+<script>
+async function consultarWallet() {
+  const wallet = document.getElementById("walletAddress").value.trim();
+  const walletInfo = document.getElementById("walletInfo");
+  const proposalsList = document.getElementById("proposalsList");
 
-  <script>
-    function toggleMenu() {
-      var menu = document.getElementById("menu");
-      menu.classList.toggle("show");
+  if (!wallet) {
+    walletInfo.innerHTML = "<p style='color:red;'>Por favor ingresa una dirección de Osmosis.</p>";
+    return;
+  }
+
+  walletInfo.innerHTML = "<p>🔍 Consultando datos para: <b>" + wallet + "</b>...</p>";
+
+  try {
+    // 🔹 1. Consultar balance de OSMO
+    const balanceResp = await fetch(`https://lcd.osmosis.zone/cosmos/bank/v1beta1/balances/${wallet}`);
+    const balanceData = await balanceResp.json();
+    const osmoBalance = balanceData.balances.find(b => b.denom === "uosmo");
+    const osmo = osmoBalance ? (osmoBalance.amount / 1_000_000).toFixed(2) : 0;
+
+    // 🔹 2. Consultar staking
+    const stakingResp = await fetch(`https://lcd.osmosis.zone/cosmos/staking/v1beta1/delegations/${wallet}`);
+    const stakingData = await stakingResp.json();
+    let staked = 0;
+    if (stakingData.delegation_responses) {
+      staked = stakingData.delegation_responses
+        .reduce((acc, d) => acc + parseInt(d.balance.amount), 0) / 1_000_000;
     }
 
-    async function consultarWallet() {
-      const address = document.getElementById("walletInput").value.trim();
-      if (!address) {
-        alert("Por favor ingresa una dirección");
-        return;
-      }
+    walletInfo.innerHTML = `
+      <p><b>Balance OSMO:</b> ${osmo}</p>
+      <p><b>OSMO en staking:</b> ${staked.toFixed(2)}</p>
+    `;
 
-      document.getElementById("walletResult").innerHTML = "Cargando balance...";
-      document.getElementById("stakingResult").innerHTML = "";
-      document.getElementById("govProposals").innerHTML = "";
+    // 🔹 3. Consultar últimas propuestas
+    const proposalsResp = await fetch("https://lcd.osmosis.zone/cosmos/gov/v1beta1/proposals?pagination.reverse=true&pagination.limit=5");
+    const proposalsData = await proposalsResp.json();
 
-      try {
-        // Balance disponible
-        const balanceRes = await fetch(`https://lcd.osmosis.zone/cosmos/bank/v1beta1/balances/${address}`);
-        const balanceData = await balanceRes.json();
-        const osmoBalance = balanceData.balances.find(b => b.denom === "uosmo");
-        const osmoAmount = osmoBalance ? (parseInt(osmoBalance.amount) / 1e6).toFixed(2) : 0;
-        document.getElementById("walletResult").innerHTML = `<strong>Balance disponible:</strong> ${osmoAmount} OSMO`;
+    proposalsList.innerHTML = ""; // limpiar
 
-        // Balance en staking
-        const stakingRes = await fetch(`https://lcd.osmosis.zone/cosmos/staking/v1beta1/delegations/${address}`);
-        const stakingData = await stakingRes.json();
-        let stakingTotal = 0;
-        if (stakingData.delegation_responses) {
-          stakingData.delegation_responses.forEach(d => {
-            stakingTotal += parseInt(d.balance.amount);
-          });
-        }
-        stakingTotal = (stakingTotal / 1e6).toFixed(2);
-        document.getElementById("stakingResult").innerHTML = `<strong>En staking:</strong> ${stakingTotal} OSMO`;
+    proposalsData.proposals.forEach(p => {
+      const tally = p.final_tally_result;
+      let totalVotes = parseInt(tally.yes) + parseInt(tally.no) + parseInt(tally.abstain) + parseInt(tally.no_with_veto);
 
-        // Propuestas de gobernanza
-        const govRes = await fetch(`https://lcd.osmosis.zone/cosmos/gov/v1beta1/proposals?pagination.limit=5`);
-        const govData = await govRes.json();
-        let govHtml = "<h3>Últimas propuestas de gobernanza:</h3><ul>";
-        govData.proposals.forEach(p => {
-          govHtml += `<li><strong>${p.title}</strong> - Estado: ${p.status}</li>`;
-        });
-        govHtml += "</ul>";
-        document.getElementById("govProposals").innerHTML = govHtml;
+      // evitar división entre 0
+      const yes = totalVotes ? ((parseInt(tally.yes) / totalVotes) * 100).toFixed(1) : 0;
+      const no = totalVotes ? ((parseInt(tally.no) / totalVotes) * 100).toFixed(1) : 0;
+      const abstain = totalVotes ? ((parseInt(tally.abstain) / totalVotes) * 100).toFixed(1) : 0;
+      const veto = totalVotes ? ((parseInt(tally.no_with_veto) / totalVotes) * 100).toFixed(1) : 0;
 
-      } catch (err) {
-        document.getElementById("walletResult").innerHTML = "Error al consultar wallet.";
-        console.error(err);
-      }
-    }
-  </script>
-
-  <!-- Partículas -->
-  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-  <script>
-    particlesJS("particles-js", {
-      particles: {
-        number: { value: 100 },
-        size: { value: 3 },
-        move: { speed: 2 },
-        line_linked: { enable: true, distance: 150 }
-      }
+      proposalsList.innerHTML += `
+        <div style="border:1px solid #ccc; margin:10px; padding:10px; border-radius:5px;">
+          <p><b>Propuesta #${p.proposal_id}:</b> ${p.content?.title || "Sin título"}</p>
+          <p><b>Estado:</b> ${p.status}</p>
+          <p>
+            ✅ Yes: ${yes}% &nbsp; 
+            ❌ No: ${no}% &nbsp; 
+            ⚪ Abstain: ${abstain}% &nbsp; 
+            🚫 Veto: ${veto}%
+          </p>
+        </div>
+      `;
     });
-  </script>
-</body>
-</html>
+
+  } catch (error) {
+    console.error(error);
+    walletInfo.innerHTML = "<p style='color:red;'>Error al consultar datos. Intenta más tarde.</p>";
+  }
+}
+</script>
