@@ -59,6 +59,29 @@
       background: #dc3545;
       color: white;
     }
+
+    /* Lista de wallets guardadas */
+    .wallet-list {
+      margin-top: 20px;
+      padding: 10px;
+      background: rgba(30,30,47,0.8);
+      border-radius: 10px;
+    }
+    .wallet-list button {
+      display: block;
+      width: 100%;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+      background: #444;
+      color: white;
+      cursor: pointer;
+      text-align: left;
+    }
+    .wallet-list button:hover {
+      background: #666;
+    }
   </style>
 </head>
 <body>
@@ -83,11 +106,17 @@
     <h2>Checador de Wallet Osmosis</h2>
     <p>Ingresa tu dirección para ver balance, staking y propuestas:</p>
     <input type="text" id="walletInput" placeholder="osmo1..." style="width:80%;padding:10px;border-radius:10px;">
-    <button onclick="consultarWallet()" style="padding:10px 20px;border-radius:10px;margin-top:10px;">Consultar</button>
+    <button id="consultarBtn" style="padding:10px 20px;border-radius:10px;margin-top:10px;">Consultar</button>
+    <button id="guardarWalletBtn" style="padding:10px 20px;border-radius:10px;margin-top:10px;">Guardar Wallet</button>
 
     <div id="walletResult" style="margin-top:20px;"></div>
     <div id="stakingResult" style="margin-top:20px;"></div>
     <div id="govProposals" style="margin-top:20px;"></div>
+
+    <div class="wallet-list" id="walletListContainer">
+      <h3>Wallets guardadas:</h3>
+      <div id="walletList"></div>
+    </div>
   </section>
 
   <script>
@@ -96,9 +125,11 @@
       menu.classList.toggle("show");
     }
 
-    async function consultarWallet() {
-      const address = document.getElementById("walletInput").value.trim();
-      if (!address) {
+    // Función principal de consulta
+    async function consultarWallet(address = null) {
+      const input = document.getElementById("walletInput");
+      const walletAddress = address || input.value.trim();
+      if (!walletAddress) {
         alert("Por favor ingresa una dirección");
         return;
       }
@@ -109,14 +140,14 @@
 
       try {
         // Balance disponible
-        const balanceRes = await fetch(`https://lcd.osmosis.zone/cosmos/bank/v1beta1/balances/${address}`);
+        const balanceRes = await fetch(`https://lcd.osmosis.zone/cosmos/bank/v1beta1/balances/${walletAddress}`);
         const balanceData = await balanceRes.json();
         const osmoBalance = balanceData.balances.find(b => b.denom === "uosmo");
         const osmoAmount = osmoBalance ? (parseInt(osmoBalance.amount) / 1e6).toFixed(2) : 0;
         document.getElementById("walletResult").innerHTML = `<strong>Balance disponible:</strong> ${osmoAmount} OSMO`;
 
         // Balance en staking
-        const stakingRes = await fetch(`https://lcd.osmosis.zone/cosmos/staking/v1beta1/delegations/${address}`);
+        const stakingRes = await fetch(`https://lcd.osmosis.zone/cosmos/staking/v1beta1/delegations/${walletAddress}`);
         const stakingData = await stakingRes.json();
         let stakingTotal = 0;
         if (stakingData.delegation_responses) {
@@ -149,6 +180,38 @@
         console.error(err);
       }
     }
+
+    // Función para guardar wallet
+    function guardarWallet() {
+      const input = document.getElementById("walletInput");
+      const walletAddress = input.value.trim();
+      if (!walletAddress) return;
+
+      let wallets = JSON.parse(localStorage.getItem("wallets") || "[]");
+      if (!wallets.includes(walletAddress)) wallets.push(walletAddress);
+      localStorage.setItem("wallets", JSON.stringify(wallets));
+      mostrarWallets();
+    }
+
+    // Función para mostrar wallets guardadas
+    function mostrarWallets() {
+      const walletListDiv = document.getElementById("walletList");
+      walletListDiv.innerHTML = "";
+      const wallets = JSON.parse(localStorage.getItem("wallets") || "[]");
+      wallets.forEach(w => {
+        const btn = document.createElement("button");
+        btn.textContent = w;
+        btn.addEventListener("click", () => consultarWallet(w));
+        walletListDiv.appendChild(btn);
+      });
+    }
+
+    // Eventos de botones
+    document.getElementById("consultarBtn").addEventListener("click", () => consultarWallet());
+    document.getElementById("guardarWalletBtn").addEventListener("click", guardarWallet);
+
+    // Mostrar wallets al cargar
+    mostrarWallets();
   </script>
 
   <!-- Partículas -->
@@ -159,9 +222,4 @@
         number: { value: 100 },
         size: { value: 3 },
         move: { speed: 2 },
-        line_linked: { enable: true, distance: 150 }
-      }
-    });
-  </script>
-</body>
-</html>
+        line_linked:
