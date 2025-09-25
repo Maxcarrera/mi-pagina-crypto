@@ -26,21 +26,24 @@
   </div>
 
   <script>
+    // Usamos event listeners en lugar de inline onclick (CSP-friendly)
     document.addEventListener('DOMContentLoaded', () => {
       const menuBtn = document.getElementById('menuBtn');
       const menu = document.getElementById('menu');
 
       menuBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
+        e.stopPropagation(); // evitar que el click se propague al documento
         menu.classList.toggle('show');
       });
 
+      // Cerrar menú si se hace click fuera
       document.addEventListener('click', (e) => {
         if (!menu.contains(e.target) && e.target !== menuBtn) {
           menu.classList.remove('show');
         }
       });
 
+      // Cerrar menú con Escape
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') menu.classList.remove('show');
       });
@@ -50,6 +53,7 @@
   <!-- Particles.js Script -->
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   <script>
+    // Inicializa partículas — no depende de inline scripts
     particlesJS("particles-js", {
       particles: {
         number: { value: 100 },
